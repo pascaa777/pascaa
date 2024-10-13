@@ -1,0 +1,80 @@
+import random
+from collections import Counter
+
+
+words = [
+    "ICONOGRAFĂ", "FAGOCITUL", "APICOLILOR", "HIPOPLAZII", "PROHODI",
+    "CIOPLEA", "COVÂRȘITELOR", "PÂRGUIRILE", "BURGHIERILE", "SAMAVOLNICII",
+    "CĂȘĂIEȘTE", "SISALUL", "CINERARIILE", "DEZAGLOMERĂM", "TETRODĂ",
+    "MÂNJITURII", "DESOFISTICĂRII", "TĂIERI", "GENTILEȚILOR", "NENOROCITUL",
+    "ÎNAINTĂ", "ISTMICUL", "ASCUȚITUNGHICUL", "OBNUBILĂRILOR", "BUMBĂCELULUI",
+    "POSTĂVĂRIILE", "CENTROZOMUL", "DEBAVURASE", "VRAMIȚE", "RETORI",
+    "EPISTOLARELOR", "ÎNCHIABUREAȚI", "LAMINATOAREA", "PLATINEZ", "ȚĂNDĂRELEI",
+    "TEVATURI", "FIDANȚATA", "EXONDĂRILE", "DECOMANDATĂ", "OMAGIALI",
+    "STÂLPISEM", "ELFILOR", "DECONCERTANTELE", "GAGICULUI", "APELARĂM",
+    "SPERMATOFITELOR", "NECREDINCIOȘILOR", "CINSTEȚUL", "NEOFORMAȚIUNII",
+    "PEGMATITUL", "PLUTUIEȘTE", "CINTEZII", "FOLFĂIESC", "OTORINOLARINGOLOGELOR",
+    "ESTETIZANTEI", "BALAOACHEȘĂ", "NOTĂRIȚĂ", "DULEȚI", "RICKETTSIOZEI",
+    "CIREȘE", "ZGĂRDAT", "PREȚIOASELOR", "DIMPREJUR", "BULBUCAT",
+    "ARIERDUNĂ", "FLACIDEI", "CONVENȚIONALI", "CUCONIȚĂ", "NELINIȘTITORULUI",
+    "BIHINDISIRILE", "ÎMPLINIREA", "INSTIGÂND", "RECENTE", "EMBLEMĂ",
+    "SINGURAȘUL", "SUBSECRETARULUI", "DEVITALIZASERĂM", "SUBAPRECIEZ",
+    "CLASATULUI", "FARAONICUL", "ÎNROLĂRILOR", "PRIMEZIU", "CRUCIATULUI",
+    "PRODIGATELE", "VINA", "CIFRARĂM", "ÎNFRUNTASEM", "VIOȘELI",
+    "AMUȘISERĂȚI", "TELEGRAFIARĂ", "CITRONADELE", "BASCHETBALIȘTILOR",
+    "SEPTICUL", "VENENO", "GUDRONĂM", "CORDENCIULUI", "STROPȘIRE",
+    "FOILETONIST", "PLICISERĂ", "ACHITAT"
+]
+
+
+def get_letter_frequencies(word_list):
+    letter_count = Counter()
+    for word in word_list:
+        letter_count.update(word)
+    return letter_count
+
+
+def get_best_guess(letter_frequencies, guessed_letters):
+    possible_letters = {letter: freq for letter, freq in letter_frequencies.items() if letter not in guessed_letters}
+    return max(possible_letters, key=possible_letters.get) if possible_letters else None
+
+
+def hangman_autoplay(max_tries=1200):
+    total_guesses = 0
+
+    for word in words:
+        word = word.upper()
+        guessed_letters = set()
+        tries = 0
+        letter_frequencies = get_letter_frequencies(words)
+
+        print(f"\nGuessing the word: '{word}' (Length: {len(word)})")
+
+        while tries < max_tries:
+            guess = get_best_guess(letter_frequencies, guessed_letters)
+            if not guess:
+                print("No more letters to guess.")
+                break
+
+            tries += 1
+            total_guesses += 1
+            print(f"Attempt {tries}: Computer guesses '{guess}'.")
+
+            if guess in word:
+                print(f"Correct guess! The letter '{guess}' is in the word.")
+            else:
+                print(f"Wrong guess! The letter '{guess}' is not in the word.")
+
+            guessed_letters.add(guess)
+
+            if all(letter in guessed_letters for letter in word):
+                print(f"\nComputer wins! The word was: {word}.")
+                break
+        else:
+            print(f"\nComputer loses! The word was: {word}.")
+
+    print(f"\nTotal number of guesses made: {total_guesses}")
+
+
+if __name__ == "__main__":
+    hangman_autoplay()
