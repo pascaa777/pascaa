@@ -1,80 +1,82 @@
-import random
 from collections import Counter
 
-
-words = [
-    "ICONOGRAFĂ", "FAGOCITUL", "APICOLILOR", "HIPOPLAZII", "PROHODI",
-    "CIOPLEA", "COVÂRȘITELOR", "PÂRGUIRILE", "BURGHIERILE", "SAMAVOLNICII",
-    "CĂȘĂIEȘTE", "SISALUL", "CINERARIILE", "DEZAGLOMERĂM", "TETRODĂ",
-    "MÂNJITURII", "DESOFISTICĂRII", "TĂIERI", "GENTILEȚILOR", "NENOROCITUL",
-    "ÎNAINTĂ", "ISTMICUL", "ASCUȚITUNGHICUL", "OBNUBILĂRILOR", "BUMBĂCELULUI",
-    "POSTĂVĂRIILE", "CENTROZOMUL", "DEBAVURASE", "VRAMIȚE", "RETORI",
-    "EPISTOLARELOR", "ÎNCHIABUREAȚI", "LAMINATOAREA", "PLATINEZ", "ȚĂNDĂRELEI",
-    "TEVATURI", "FIDANȚATA", "EXONDĂRILE", "DECOMANDATĂ", "OMAGIALI",
-    "STÂLPISEM", "ELFILOR", "DECONCERTANTELE", "GAGICULUI", "APELARĂM",
-    "SPERMATOFITELOR", "NECREDINCIOȘILOR", "CINSTEȚUL", "NEOFORMAȚIUNII",
-    "PEGMATITUL", "PLUTUIEȘTE", "CINTEZII", "FOLFĂIESC", "OTORINOLARINGOLOGELOR",
-    "ESTETIZANTEI", "BALAOACHEȘĂ", "NOTĂRIȚĂ", "DULEȚI", "RICKETTSIOZEI",
-    "CIREȘE", "ZGĂRDAT", "PREȚIOASELOR", "DIMPREJUR", "BULBUCAT",
-    "ARIERDUNĂ", "FLACIDEI", "CONVENȚIONALI", "CUCONIȚĂ", "NELINIȘTITORULUI",
-    "BIHINDISIRILE", "ÎMPLINIREA", "INSTIGÂND", "RECENTE", "EMBLEMĂ",
-    "SINGURAȘUL", "SUBSECRETARULUI", "DEVITALIZASERĂM", "SUBAPRECIEZ",
-    "CLASATULUI", "FARAONICUL", "ÎNROLĂRILOR", "PRIMEZIU", "CRUCIATULUI",
-    "PRODIGATELE", "VINA", "CIFRARĂM", "ÎNFRUNTASEM", "VIOȘELI",
-    "AMUȘISERĂȚI", "TELEGRAFIARĂ", "CITRONADELE", "BASCHETBALIȘTILOR",
-    "SEPTICUL", "VENENO", "GUDRONĂM", "CORDENCIULUI", "STROPȘIRE",
-    "FOILETONIST", "PLICISERĂ", "ACHITAT"
+# Word list (masked words and actual words)
+word_pairs = [
+    ("******RA**", "ICONOGRAFĂ"), ("*A**C****", "FAGOCITUL"), ("*P*C******", "APICOLILOR"),
+    ("H**O******", "HIPOPLAZII"), ("**OHO**", "PROHODI"), ("***PL**", "CIOPLEA"),
+    ("**V***I*****", "COVÂRȘITELOR"), ("P***U*****", "PÂRGUIRILE"), ("**R***ER**E", "BURGHIERILE"),
+    ("**M*****I*II", "SAMAVOLNICII"), ("*Ă*Ă***T*", "CĂȘĂIEȘTE"),
+    ("******UR**", "MÂNJITURII"), ("T***R*", "TĂIERI"), ("****IL**IL**", "GENTILEȚILOR"), ("******CI***", "NENOROCITUL"), ("***I*T*", "ÎNAINTĂ"),
+    ("******UL", "ISTMICUL"), ("**CU***U****CU*", "ASCUȚITUNGHICUL"), ("O******Ă***O*", "OBNUBILĂRILOR"),
+    ("****ĂC******", "BUMBĂCELULUI"), ("****Ă*ĂR****", "POSTĂVĂRIILE"), ("*E********L", "CENTROZOMUL"),
+    ("*****U**S*", "DEBAVURASE"), ("V***I**", "VRAMIȚE"), ("**T**I", "RETORI"), ("**I***L***L**", "EPISTOLARELOR"),
+    ("***H**B******", "ÎNCHIABUREAȚI"), ("L*********E*", "LAMINATOAREA"), ("******EZ", "PLATINEZ"),
+    ("***D*R****", "ȚĂNDĂRELEI"), ("***A**R*", "TEVATURI"), ("****P**E*", "STÂLPISEM"), ("EL**L**", "ELFILOR"), ("**C**C***A*****", "DECONCERTANTELE"),
+    ("***I*U*UI", "GAGICULUI"), ("A**LA***", "APELARĂM"), ("*******OF****O*", "SPERMATOFITELOR"),
+    ("***R******O***OR", "NECREDINCIOȘILOR"), ("***ST****", "CINSTEȚUL"), ("P*G*******", "PEGMATITUL"), ("***T**E*TE", "PLUTUIEȘTE"), ("*I**E*II", "CINTEZII"), ("*O***I***", "FOLFĂIESC"),
+    ("E**E***A**E*", "ESTETIZANTEI"),  ("B*********Ă", "BALAOACHEȘĂ"), ("*O*Ă***Ă", "NOTĂRIȚĂ"), ("D*L***", "DULEȚI"),
+    ("****E**S***E*", "RICKETTSIOZEI"), ("C***Ș*", "CIREȘE"), ("*****D*N*", "ARIERDUNĂ"), ("***CI**I", "FLACIDEI"), ("******Ț****L*", "CONVENȚIONALI"),
+    ("******ȚĂ", "CUCONIȚĂ"),  ("B********R***", "BIHINDISIRILE"),
+    ("***L*N****", "ÎMPLINIREA"), ("I*S*I****", "INSTIGÂND"), ("R*C****", "RECENTE"), ("E***E*Ă", "EMBLEMĂ"),
+    ("***G***Ș**", "SINGURAȘUL"), ("****E**ET******", "SUBSECRETARULUI"), ("*E*********E*Ă*", "DEVITALIZASERĂM"),
+    ("*****R**I**", "SUBAPRECIEZ"), ("CL*****L**", "CLASATULUI"), ("**R**N****", "FARAONICUL"),
+    ("**RO**R**OR", "ÎNROLĂRILOR"), ("*R*****U", "PRIMEZIU"), ("C**C*A*****", "CRUCIATULUI"),
+    ("P*O********", "PRODIGATELE"), ("**NA", "VINA"), ("**FR*R**", "CIFRARĂM"),
+    ("********S*M", "ÎNFRUNTASEM"), ("**OȘ***", "VIOȘELI"), ("********ĂȚ*", "AMUȘISERĂȚI"),
+    ("*E*E*R****R*", "TELEGRAFIARĂ"), ("******AD***", "CITRONADELE")
 ]
 
-
-def get_letter_frequencies(word_list):
-    letter_count = Counter()
-    for word in word_list:
-        letter_count.update(word)
-    return letter_count
+# Romanian language vowel set
+vowels = set("AEIOUĂÎ")
 
 
-def get_best_guess(letter_frequencies, guessed_letters):
-    possible_letters = {letter: freq for letter, freq in letter_frequencies.items() if letter not in guessed_letters}
-    return max(possible_letters, key=possible_letters.get) if possible_letters else None
+# Step 1: Calculate letter frequencies based on word lengths
+def calculate_letter_frequencies_by_length(words):
+    length_based_frequencies = {}
+    for _, word in words:
+        word_length = len(word)
+        if word_length not in length_based_frequencies:
+            length_based_frequencies[word_length] = Counter()
+        length_based_frequencies[word_length].update(word)
+    return length_based_frequencies
 
 
-def hangman_autoplay(max_tries=1200):
+# Step 2: Function to simulate guessing for each word
+def play_hangman(word_pairs):
     total_guesses = 0
+    letter_frequencies_by_length = calculate_letter_frequencies_by_length(word_pairs)
 
-    for word in words:
-        word = word.upper()
+    for masked_word, actual_word in word_pairs:
         guessed_letters = set()
+        current_guess = list(masked_word)  # The current state of guessed letters
         tries = 0
-        letter_frequencies = get_letter_frequencies(words)
 
-        print(f"\nGuessing the word: '{word}' (Length: {len(word)})")
+        # Separate vowels and consonants in the letter frequency list
+        word_length = len(actual_word)
+        freq_by_length = letter_frequencies_by_length[word_length]
+        sorted_vowels = [item[0] for item in freq_by_length.most_common() if item[0] in vowels]
+        sorted_consonants = [item[0] for item in freq_by_length.most_common() if item[0] not in vowels]
 
-        while tries < max_tries:
-            guess = get_best_guess(letter_frequencies, guessed_letters)
-            if not guess:
-                print("No more letters to guess.")
-                break
-
+        # Step 3: Guess vowels first
+        for letter in sorted_vowels + sorted_consonants:
+            if letter in actual_word and letter not in guessed_letters:
+                guessed_letters.add(letter)
+                for i, char in enumerate(actual_word):
+                    if char == letter:
+                        current_guess[i] = letter
             tries += 1
-            total_guesses += 1
-            print(f"Attempt {tries}: Computer guesses '{guess}'.")
 
-            if guess in word:
-                print(f"Correct guess! The letter '{guess}' is in the word.")
-            else:
-                print(f"Wrong guess! The letter '{guess}' is not in the word.")
-
-            guessed_letters.add(guess)
-
-            if all(letter in guessed_letters for letter in word):
-                print(f"\nComputer wins! The word was: {word}.")
+            # Stop if the word is fully guessed
+            if ''.join(current_guess) == actual_word:
                 break
-        else:
-            print(f"\nComputer loses! The word was: {word}.")
 
-    print(f"\nTotal number of guesses made: {total_guesses}")
+        # Log progress for each word
+        print(f"Guessed word: {''.join(current_guess)} in {tries} tries.")
+        total_guesses += tries
+
+    return total_guesses
 
 
-if __name__ == "__main__":
-    hangman_autoplay()
+# Step 4: Play the hangman game and calculate total guesses
+total_tries = play_hangman(word_pairs)
+print(f"Total tries: {total_tries}")
